@@ -41,7 +41,7 @@ public class InicioFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, new BlankFragment()) //cambiar por foros fragment
+                        .replace(R.id.fragmentContainer, new ForoFragment())
                         .addToBackStack(null)
                         .commit();
             }

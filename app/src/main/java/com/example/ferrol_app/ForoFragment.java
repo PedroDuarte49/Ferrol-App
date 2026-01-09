@@ -1,3 +1,5 @@
+package com.example.ferrol_app;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ public class ForoFragment extends Fragment {
         foros.add(new Foro("ayuda", "Foro de ayuda"));
 
         // Crear botones dinámicos
+        // PARA EL QUE HAGA LOS FOROS AQUI LAS RUTAS
         for (Foro foro : foros) {
             Button btn = new Button(getContext());
             btn.setText(foro.getId());

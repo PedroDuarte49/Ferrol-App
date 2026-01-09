@@ -1,7 +1,8 @@
 package com.example.ferrol_app;
 
 public class Foro {
-
+    // Creo que no son los nombres originales de la API
+    //Cambiar
     private String id;
     private String descripcion;
 

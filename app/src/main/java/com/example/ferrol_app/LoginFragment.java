@@ -1,64 +1,138 @@
 package com.example.ferrol_app;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class LoginFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private EditText editUsuario;
+    private EditText editPassword;
+    private Button btnLogin;
+    private Button btnRegister;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public LoginFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        // Referencias
+        editUsuario = view.findViewById(R.id.edit_usuario);
+        editPassword = view.findViewById(R.id.edit_password);
+        btnLogin = view.findViewById(R.id.btn_login);
+        btnRegister = view.findViewById(R.id.btn_register);
+
+        // BOTÓN LOGIN
+        btnLogin.setOnClickListener(v -> {
+            String username = editUsuario.getText().toString().trim();
+            String password = editPassword.getText().toString().trim();
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(getContext(), "Por favor llena todos los campos", Toast.LENGTH_SHORT).show();
+            } else {
+                login(username, password);
+            }
+        });
+
+        // BOTÓN REGISTER
+        btnRegister.setOnClickListener(v -> {
+            RegisterFragment registerFragment = new RegisterFragment();
+
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, registerFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        return view;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+
+
+
+    private void login(String username, String password) {
+
+        new Thread(() -> {
+            try {
+                // URL para EMULADOR
+                URL url = new URL("http://10.0.2.2:8000/auth/login");
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+
+                // JSON que enviamos a Django
+                JSONObject json = new JSONObject();
+                json.put("user_username", username);
+                json.put("user_password", password);
+
+                OutputStream os = conn.getOutputStream();
+                os.write(json.toString().getBytes());
+                os.flush();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_CREATED) { // 201
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+
+                    while ((line = br.readLine()) != null) {
+                        response.append(line);
+                    }
+
+                    JSONObject responseJson = new JSONObject(response.toString());
+                    String token = responseJson.getString("token");
+
+                    requireActivity().runOnUiThread(() -> {
+                        saveToken(token);
+                        Toast.makeText(getContext(), "Login correcto", Toast.LENGTH_SHORT).show();
+                    });
+
+                } else {
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(getContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
+                    );
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(getContext(), "Error de conexión con el servidor", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+        }).start();
+    }
+    private void saveToken(String token) {
+        SharedPreferences prefs = requireActivity()
+                .getSharedPreferences("APP_PREFS", Context.MODE_PRIVATE);
+
+        prefs.edit().putString("AUTH_TOKEN", token).apply();
     }
 }

@@ -9,5 +9,5 @@
     <item
         android:id="@+id/nav_login"
         android:title="Login"
-        android:icon="@drawable/ic_login"/>
+        android:icon="@drawable/login"/>
 </menu>

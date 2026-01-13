@@ -60,7 +60,7 @@ public class RegisterFragment extends Fragment {
                 // Registro correcto → ir a Login
                 getParentFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, new BlankFragment())
+                        .replace(R.id.fragmentContainer, new LoginFragment())
                         .addToBackStack(null)
                         .commit();
             }

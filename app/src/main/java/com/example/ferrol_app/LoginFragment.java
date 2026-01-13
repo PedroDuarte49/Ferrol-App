@@ -60,7 +60,7 @@ public class LoginFragment extends Fragment {
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, blank)
+                        .replace(R.id.fragmentContainer, registerFragment)
                         .addToBackStack(null)
                         .commit();
             }

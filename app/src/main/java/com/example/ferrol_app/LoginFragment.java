@@ -55,12 +55,12 @@ public class LoginFragment extends Fragment {
 
         // BOTÓN REGISTER
         btnRegister.setOnClickListener(v -> {
-            RegisterFragment registerFragment = new RegisterFragment();
+             RegisterFragment registerFragment = new RegisterFragment();
 
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, registerFragment)
+                        .replace(R.id.fragmentContainer, blank)
                         .addToBackStack(null)
                         .commit();
             }

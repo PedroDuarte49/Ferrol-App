@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.nav_main) {
                 selectedFragment = new InicioFragment();
 
-            } //else if (item.getItemId() == R.id.nav_login) {
-               // selectedFragment = new LoginFragment();
-            //}
+            }else if (item.getItemId() == R.id.nav_login) {
+                selectedFragment = new LoginFragment();
+            }
 
             if (selectedFragment != null) {
                 getSupportFragmentManager()

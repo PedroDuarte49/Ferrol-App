@@ -32,23 +32,24 @@ public class ForoFragment extends Fragment {
 
         // 🔹 SIMULACIÓN (esto vendrá luego del backend)
         List<Foro> foros = new ArrayList<>();
-        foros.add(new Foro("bugs", "Foro sobre bugs"));
-        foros.add(new Foro("general", "Foro general"));
-        foros.add(new Foro("ayuda", "Foro de ayuda"));
+        foros.add(new Foro(1, "bugs", "Foro sobre bugs"));
+        foros.add(new Foro(2,"general", "Foro general"));
+        foros.add(new Foro(3,"ayuda", "Foro de ayuda"));
 
         // Crear botones dinámicos
         // PARA EL QUE HAGA LOS FOROS AQUI LAS RUTAS
         for (Foro foro : foros) {
             Button btn = new Button(getContext());
-            btn.setText(foro.getId());
+            btn.setText(foro.getTitulo());
 
             btn.setOnClickListener(v -> {
-                // AQUÍ irá la llamada a la API
-                Toast.makeText(
-                        getContext(),
-                        "Abrir foro: " + foro.getId(),
-                        Toast.LENGTH_SHORT
-                ).show();
+                if (getActivity() != null) {
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragmentContainer, PagForosFragment.newInstance(foro.getId()))
+                            .addToBackStack(null)
+                            .commit();
+                }
             });
 
             foroContainer.addView(btn);
@@ -57,13 +58,9 @@ public class ForoFragment extends Fragment {
         // 🔸 BOTÓN DE PRUEBA TOTAL
         Button testButton = new Button(getContext());
         testButton.setText("Foro prueba API (/foro/bugs)");
-        testButton.setOnClickListener(v ->
-                Toast.makeText(
-                        getContext(),
-                        "GET /foro/bugs con token",
-                        Toast.LENGTH_LONG
-                ).show()
-        );
+        testButton.setOnClickListener(v -> {
+
+        });
 
         foroContainer.addView(testButton);
 

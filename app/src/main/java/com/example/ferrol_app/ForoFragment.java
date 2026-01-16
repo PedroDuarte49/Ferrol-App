@@ -18,52 +18,57 @@ import com.example.ferrol_app.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ForoFragment extends Fragment {
+
+    private LinearLayout foroContainer;
 
     @Nullable
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_foro, container, false);
-        LinearLayout foroContainer = view.findViewById(R.id.foroContainer);
+        foroContainer = view.findViewById(R.id.foroContainer);
 
-        // 🔹 SIMULACIÓN (esto vendrá luego del backend)
-        List<Foro> foros = new ArrayList<>();
-        foros.add(new Foro(1, "bugs", "Foro sobre bugs"));
-        foros.add(new Foro(2,"general", "Foro general"));
-        foros.add(new Foro(3,"ayuda", "Foro de ayuda"));
-
-        // Crear botones dinámicos
-        // PARA EL QUE HAGA LOS FOROS AQUI LAS RUTAS
-        for (Foro foro : foros) {
-            Button btn = new Button(getContext());
-            btn.setText(foro.getTitulo());
-
-            btn.setOnClickListener(v -> {
-                if (getActivity() != null) {
-                    getActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragmentContainer, PagForosFragment.newInstance(foro.getId()))
-                            .addToBackStack(null)
-                            .commit();
-                }
-            });
-
-            foroContainer.addView(btn);
-        }
-
-        // 🔸 BOTÓN DE PRUEBA TOTAL
-        Button testButton = new Button(getContext());
-        testButton.setText("Foro prueba API (/foro/bugs)");
-        testButton.setOnClickListener(v -> {
-
-        });
-
-        foroContainer.addView(testButton);
+        loadForos();
 
         return view;
+    }
+
+    private void loadForos() {
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<ForosResponse> call = apiService.getForos();
+
+        call.enqueue(new Callback<ForosResponse>() {
+            @Override
+            public void onResponse(Call<ForosResponse> call, Response<ForosResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Foro> foros = response.body().getForos();
+
+                    for (Foro foro : foros) {
+                        Button boton = new Button(getContext());
+                        boton.setText(foro.getTitulo());
+                        boton.setOnClickListener(v ->
+                                Toast.makeText(getContext(),
+                                        "Foro ID: " + foro.getId(),
+                                        Toast.LENGTH_SHORT).show()
+                        );
+                        foroContainer.addView(boton);
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Error cargando foros", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ForosResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Fallo de red: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

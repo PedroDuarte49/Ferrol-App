@@ -8,8 +8,15 @@ import retrofit2.http.GET;
 class ScoreResponse {
     public List<Score> scores;
 }
+class ForosResponse {
+    private List<Foro> foros;
+
+    public List<Foro> getForos() { return foros; }
+}
 
 public interface ApiService {
     @GET("score") // El path que definiste en tu urls.py
     Call<ScoreResponse> getScoreboard();
+    @GET("foros")
+    Call<ForosResponse> getForos();
 }

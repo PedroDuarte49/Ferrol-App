@@ -10,7 +10,6 @@ class ScoreResponse {
 }
 class ForosResponse {
     private List<Foro> foros;
-
     public List<Foro> getForos() { return foros; }
 }
 

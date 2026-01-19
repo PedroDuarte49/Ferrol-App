@@ -41,7 +41,6 @@ public class ForoAdapter extends RecyclerView.Adapter<ForoAdapter.ForoViewHolder
     public void onBindViewHolder(@NonNull ForoViewHolder holder, int position) {
         Foro foro = listaForos.get(position);
         holder.tvTitulo.setText(foro.getTitulo());
-        holder.tvContenido.setText(foro.getContenido());
 
         holder.itemView.setOnClickListener(v -> listener.onForoClick(foro));
     }
@@ -52,12 +51,11 @@ public class ForoAdapter extends RecyclerView.Adapter<ForoAdapter.ForoViewHolder
     }
 
     static class ForoViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitulo, tvContenido;
+        TextView tvTitulo;
 
         ForoViewHolder(View itemView) {
             super(itemView);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
-            tvContenido = itemView.findViewById(R.id.tvContenido);
         }
     }
 }

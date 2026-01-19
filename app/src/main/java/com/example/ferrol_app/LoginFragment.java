@@ -73,21 +73,18 @@ public class LoginFragment extends Fragment {
 
 
     private void login(String username, String password) {
-
         new Thread(() -> {
+            HttpURLConnection conn = null;
             try {
-                // URL para EMULADOR
                 URL url = new URL("http://10.0.2.2:8000/auth/login");
-
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setDoOutput(true);
 
-                // JSON que enviamos a Django
                 JSONObject json = new JSONObject();
-                json.put("user_username", username);
-                json.put("user_password", password);
+                json.put("username", username);
+                json.put("password", password);
 
                 OutputStream os = conn.getOutputStream();
                 os.write(json.toString().getBytes());
@@ -96,39 +93,60 @@ public class LoginFragment extends Fragment {
 
                 int responseCode = conn.getResponseCode();
 
-                if (responseCode == HttpURLConnection.HTTP_CREATED) { // 201
-
-                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-
-                    while ((line = br.readLine()) != null) {
-                        response.append(line);
-                    }
-
-                    JSONObject responseJson = new JSONObject(response.toString());
-                    String token = responseJson.getString("token");
-
-                    requireActivity().runOnUiThread(() -> {
-                        saveToken(token);
-                        Toast.makeText(getContext(), "Login correcto", Toast.LENGTH_SHORT).show();
-                    });
-
+                // Leer stream correcto según código
+                BufferedReader br;
+                if (responseCode >= 200 && responseCode < 300) {
+                    br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 } else {
-                    requireActivity().runOnUiThread(() ->
-                            Toast.makeText(getContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
-                    );
+                    br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 }
+
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line);
+                }
+                br.close();
+
+                int finalResponseCode = responseCode;
+                String finalResponse = response.toString();
+
+                requireActivity().runOnUiThread(() -> {
+                    try {
+                        JSONObject respJson = new JSONObject(finalResponse);
+
+                        if (finalResponseCode == HttpURLConnection.HTTP_CREATED) {
+                            String token = respJson.getString("token");
+                            saveToken(token);
+                            Toast.makeText(getContext(), "Login correcto", Toast.LENGTH_SHORT).show();
+
+                        } else if (finalResponseCode == 404) {
+                            Toast.makeText(getContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
+
+                        } else if (finalResponseCode == 401) {
+                            Toast.makeText(getContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(getContext(), "Error del servidor", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Error procesando la respuesta", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             } catch (Exception e) {
                 e.printStackTrace();
                 requireActivity().runOnUiThread(() ->
                         Toast.makeText(getContext(), "Error de conexión con el servidor", Toast.LENGTH_SHORT).show()
                 );
+            } finally {
+                if (conn != null) conn.disconnect();
             }
-
         }).start();
     }
+
+
     private void saveToken(String token) {
         SharedPreferences prefs = requireActivity()
                 .getSharedPreferences("APP_PREFS", Context.MODE_PRIVATE);

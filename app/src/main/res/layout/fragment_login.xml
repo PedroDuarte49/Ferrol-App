@@ -1,85 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".LoginFragment"
     android:background="@drawable/bg_retro">
 
+    <!-- TÍTULO -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Iniciar Sesion"
-        android:textSize="32sp"
+        android:text="@string/btn_login_text"
+        android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/neon_yellow"
+        android:shadowColor="@color/neon_pink"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="6"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="48dp"/>
+
+    <!-- SUBTÍTULO -->
     <TextView
         android:id="@+id/text"
-        android:layout_width="180dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text="Introduce tu nombre de usuario y contraseña para iniciar sesión"
+        android:text="@string/subtitle_login"
+        android:textSize="14sp"
+        android:textColor="#CFC4FF"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="32dp"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
-    <EditText
+    <!-- USUARIO -->
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edit_usuario"
         android:layout_width="0dp"
-        android:hint="usuario"
         android:layout_height="wrap_content"
+        android:hint="@string/hint_usuario"
+        android:textColor="#FFFFFF"
+        app:hintTextColor="#9A8CFF"
+        android:background="@drawable/input_arcade"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text"
-        android:layout_marginTop="24dp"
-        />
-    <EditText
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
+
+    <!-- PASSWORD -->
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edit_password"
         android:layout_width="0dp"
-        android:hint="contraseña"
         android:layout_height="wrap_content"
+        android:hint="@string/hint_password"
+        android:textColor="#FFFFFF"
+        app:hintTextColor="#9A8CFF"
+        android:inputType="textPassword"
+        android:background="@drawable/input_arcade"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_usuario"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_usuario"
-        android:layout_marginTop="24dp"
-        android:inputType="textPassword"
-        />
-    <Button
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
+
+    <!-- BOTÓN LOGIN -->
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Iniciar sesion"
+        android:text="@string/btn_login_text"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#E0D7FF"
+        android:background="@drawable/btn_arcade_glow"
+        android:padding="14dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_password"
-        android:layout_marginTop="4dp"
-        />
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
-    <Button
+    <!-- BOTÓN REGISTRO -->
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Registrarse"
+        android:text="@string/btn_register_text"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#CFC4FF"
+        android:background="@drawable/bg_retro"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/btn_login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_login"
-        android:layout_marginTop="4dp"
-        />
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"/>
+
+    <!-- TEXTO ABAJO -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="¿No tienes cuenta?...Registrate"
+        android:text="@string/text"
+        android:textColor="@color/neon_blue"
+        android:textSize="12sp"
+        android:shadowColor="@color/neon_pink"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_register"
-        android:layout_marginTop="8dp"
-        />
+        android:layout_marginBottom="32dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -119,7 +119,14 @@ public class LoginFragment extends Fragment {
                             String token = respJson.getString("token");
                             saveToken(token);
                             Toast.makeText(getContext(), "Login correcto", Toast.LENGTH_SHORT).show();
+                            InicioFragment inicioFragment = new InicioFragment();
 
+                            if (getActivity() != null) {
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.fragmentContainer, inicioFragment)
+                                        .commit();
+                            }
                         } else if (finalResponseCode == 404) {
                             Toast.makeText(getContext(), "Usuario no registrado", Toast.LENGTH_SHORT).show();
 

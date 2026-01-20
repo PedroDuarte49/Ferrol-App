@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-01-19T15:43:32.354230500Z">
+        <DropdownSelection timestamp="2026-01-20T09:08:46.761296900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Breixo\.android\avd\Small_Phone_3.avd" />

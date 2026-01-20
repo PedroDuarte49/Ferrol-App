@@ -58,4 +58,33 @@
         android:layout_marginEnd="30dp"
         />
 
+    <LinearLayout
+        android:id="@+id/layoutComentario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <EditText
+            android:id="@+id/editComentario"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Escribe tu comentario"
+            android:maxLines="3"
+            android:background="@drawable/bg_edit_comentario"
+            android:textColor="@android:color/black"
+            />
+
+        <ImageButton
+            android:id="@+id/btnEnviarComentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_send"
+            android:contentDescription="Enviar"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

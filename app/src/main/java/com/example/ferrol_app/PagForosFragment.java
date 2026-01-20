@@ -11,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,12 @@ import java.util.List;
 public class PagForosFragment extends Fragment {
 
     private static final String ARG_ID_FORO = "id_foro";
+
+    private String getToken() {
+        return requireActivity()
+                .getSharedPreferences("APP_PREFS", requireContext().MODE_PRIVATE)
+                .getString("AUTH_TOKEN", null);
+    }
 
     public static PagForosFragment newInstance(int idForo) {
         PagForosFragment fragment = new PagForosFragment();
@@ -47,11 +57,36 @@ public class PagForosFragment extends Fragment {
         TextView txtTitulo = view.findViewById(R.id.txtTitulo);
         RecyclerView recycler = view.findViewById(R.id.recyclerMensajes);
         ImageButton btnAgregar = view.findViewById(R.id.btnAgregar);
+        LinearLayout layoutComentario = view.findViewById(R.id.layoutComentario);
+        EditText editComentario = view.findViewById(R.id.editComentario);
+        ImageButton btnEnviar = view.findViewById(R.id.btnEnviarComentario);
 
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         int idForo = getArguments() != null ? getArguments().getInt(ARG_ID_FORO) : 1;
 
+        btnAgregar.setOnClickListener(v -> {
+            layoutComentario.setVisibility(View.VISIBLE);
+            editComentario.requestFocus();
+        });
+
+        btnEnviar.setOnClickListener(v -> {
+
+            String texto = editComentario.getText().toString().trim();
+
+            if (texto.isEmpty()) {
+                Toast.makeText(requireContext(),
+                        "El comentario no puede estar vacío",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            enviarComentario(idForo, texto);
+
+            // Limpiar y ocultar
+            editComentario.setText("");
+            layoutComentario.setVisibility(View.GONE);
+        });
 
         cargarTituloForo(idForo, txtTitulo);
 
@@ -60,9 +95,6 @@ public class PagForosFragment extends Fragment {
         info.setOnClickListener(v -> {
             mostrarContenidoForo(idForo);
         });
-        btnAgregar.setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Agregar mensaje", Toast.LENGTH_SHORT).show()
-        );
     }
     private void mostrarContenidoForo(int idForo) {
 
@@ -229,6 +261,70 @@ public class PagForosFragment extends Fragment {
                 requireActivity().runOnUiThread(() ->
                         Toast.makeText(requireContext(),
                                 "Error cargando comentarios",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+        }).start();
+    }
+    private void enviarComentario(int idForo, String textoComentario) {
+
+        new Thread(() -> {
+            try {
+                String token = getToken();
+
+                if (token == null) {
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(),
+                                    "Debes iniciar sesión para comentar",
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                    return;
+                }
+
+                URL url = new URL("http://10.0.2.2:8000/foros/" + idForo);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Authorization", token); // 🔐 TOKEN
+                conn.setDoOutput(true);
+
+                // JSON body
+                org.json.JSONObject json = new org.json.JSONObject();
+                json.put("comentario", textoComentario);
+
+                java.io.OutputStream os = conn.getOutputStream();
+                os.write(json.toString().getBytes());
+                os.flush();
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_CREATED) {
+
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireContext(),
+                                "Comentario enviado",
+                                Toast.LENGTH_SHORT).show();
+
+                        // Recargar comentarios
+                        cargarComentarios(idForo,
+                                (RecyclerView) getView().findViewById(R.id.recyclerMensajes));
+                    });
+
+                } else {
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(requireContext(),
+                                    "Error al enviar comentario",
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(),
+                                "Error de conexión",
                                 Toast.LENGTH_SHORT).show()
                 );
             }

@@ -47,8 +47,17 @@ public class ForoFragment extends Fragment {
         // 2. Inicializar adapter vacío
         adapter = new ForoAdapter(new ArrayList<>(), foro -> {
             Toast.makeText(getContext(), "Foro: " + foro.getTitulo(), Toast.LENGTH_SHORT).show();
-            // Aquí luego se abrirá el fragment de comentarios
+
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, PagForosFragment.newInstance(foro.getId()))
+                        .addToBackStack(null) // para volver atrás
+                        .commit();
+
         });
+
+
 
         recyclerView.setAdapter(adapter);
 

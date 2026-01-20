@@ -18,7 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="32dp"
+       />
 
     <ImageButton
         android:id="@+id/btnAgregar"
@@ -42,5 +43,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         android:padding="16dp"/>
+
+    <ImageButton
+        android:id="@+id/info"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Info"
+        android:src="@drawable/info"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="@id/txtTitulo"
+        app:layout_constraintBottom_toBottomOf="@id/txtTitulo"
+        app:layout_constraintEnd_toStartOf="@id/txtTitulo"
+        android:layout_marginEnd="30dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

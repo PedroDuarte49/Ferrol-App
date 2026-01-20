@@ -43,6 +43,7 @@ public class PagForosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ImageButton info = view.findViewById(R.id.info);
         TextView txtTitulo = view.findViewById(R.id.txtTitulo);
         RecyclerView recycler = view.findViewById(R.id.recyclerMensajes);
         ImageButton btnAgregar = view.findViewById(R.id.btnAgregar);
@@ -51,15 +52,133 @@ public class PagForosFragment extends Fragment {
 
         int idForo = getArguments() != null ? getArguments().getInt(ARG_ID_FORO) : 1;
 
-        txtTitulo.setText("Foro " + idForo);
+
+        cargarTituloForo(idForo, txtTitulo);
 
         cargarComentarios(idForo, recycler);
 
+        info.setOnClickListener(v -> {
+            mostrarContenidoForo(idForo);
+        });
         btnAgregar.setOnClickListener(v ->
                 Toast.makeText(requireContext(), "Agregar mensaje", Toast.LENGTH_SHORT).show()
         );
     }
+    private void mostrarContenidoForo(int idForo) {
 
+        new Thread(() -> {
+            try {
+                String urlString = "http://10.0.2.2:8000/foros";
+
+                java.net.URL url = new java.net.URL(urlString);
+                java.net.HttpURLConnection conn =
+                        (java.net.HttpURLConnection) url.openConnection();
+
+                conn.setRequestMethod("GET");
+
+                java.io.BufferedReader reader =
+                        new java.io.BufferedReader(
+                                new java.io.InputStreamReader(conn.getInputStream()));
+
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                reader.close();
+
+                org.json.JSONObject json = new org.json.JSONObject(response.toString());
+                org.json.JSONArray foros = json.getJSONArray("foros");
+
+                String contenido = "Sin contenido";
+
+                for (int i = 0; i < foros.length(); i++) {
+                    org.json.JSONObject foro = foros.getJSONObject(i);
+
+                    if (foro.getInt("id") == idForo) {
+                        contenido = foro.getString("contenido");
+                        break;
+                    }
+                }
+
+                String finalContenido = contenido;
+
+                requireActivity().runOnUiThread(() -> {
+                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Contenido del foro")
+                            .setMessage(finalContenido)
+                            .setPositiveButton("Cerrar", null)
+                            .show();
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(),
+                                "Error cargando contenido",
+                                Toast.LENGTH_SHORT).show()
+                );
+            }
+        }).start();
+    }
+
+    private void cargarTituloForo(int idForo, TextView txtTitulo) {
+
+        new Thread(() -> {
+            try {
+                String urlString = "http://10.0.2.2:8000/foros";
+
+                java.net.URL url = new java.net.URL(urlString);
+                java.net.HttpURLConnection conn =
+                        (java.net.HttpURLConnection) url.openConnection();
+
+                conn.setRequestMethod("GET");
+
+                java.io.BufferedReader reader =
+                        new java.io.BufferedReader(
+                                new java.io.InputStreamReader(conn.getInputStream()));
+
+                StringBuilder response = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+
+                reader.close();
+
+                org.json.JSONObject json = new org.json.JSONObject(response.toString());
+                org.json.JSONArray foros = json.getJSONArray("foros");
+
+                String tituloEncontrado = "Foro";
+
+                for (int i = 0; i < foros.length(); i++) {
+                    org.json.JSONObject foro = foros.getJSONObject(i);
+
+                    int id = foro.getInt("id");
+
+                    if (id == idForo) {
+                        tituloEncontrado = foro.getString("titulo");
+                        break;
+                    }
+                }
+
+                String finalTitulo = tituloEncontrado;
+
+                requireActivity().runOnUiThread(() ->
+                        txtTitulo.setText(finalTitulo)
+                );
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                requireActivity().runOnUiThread(() ->
+                        txtTitulo.setText("Foro")
+                );
+            }
+        }).start();
+    }
     private void cargarComentarios(int idForo, RecyclerView recycler) {
 
         new Thread(() -> {

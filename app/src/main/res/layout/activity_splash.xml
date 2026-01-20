@@ -2,28 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
-
-    <!-- Título arriba -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HighMountain"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"/>
-
-    <!-- Imagen en el centro -->
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/torre_hercules"
-        android:layout_centerInParent="true"
-        android:contentDescription="Logo"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/hercules">
 
     <!-- Indicador de carga abajo -->
     <ProgressBar
@@ -31,8 +11,9 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/imgLogo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="96dp"
         android:indeterminate="true"/>
+
 </RelativeLayout>

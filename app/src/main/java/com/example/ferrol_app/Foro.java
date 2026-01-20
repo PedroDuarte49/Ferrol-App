@@ -1,21 +1,25 @@
 package com.example.ferrol_app;
 
 public class Foro {
-    // Creo que no son los nombres originales de la API
-    //Cambiar
-    private String id;
-    private String descripcion;
+    private int id;
+    private String titulo;
+    private String contenido;
 
-    public Foro(String id, String descripcion) {
+    public Foro(int id, String titulo, String contenido) {
         this.id = id;
-        this.descripcion = descripcion;
+        this.titulo = titulo;
+        this.contenido = contenido;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getContenido() {
+        return contenido;
     }
 }

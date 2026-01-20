@@ -1,11 +1,6 @@
 package com.example.ferrol_app;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +9,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterFragment extends Fragment {
 
-    public RegisterFragment() { }
+    public RegisterFragment() {}
 
     @Nullable
     @Override
@@ -40,32 +44,56 @@ public class RegisterFragment extends Fragment {
 
             tvError.setVisibility(View.GONE);
 
-            // VALIDACIÓN BÁSICA
             if (username.isEmpty() || password.isEmpty()) {
                 tvError.setText("Rellena todos los campos");
                 tvError.setVisibility(View.VISIBLE);
                 return;
             }
 
-            // SIMULACIÓN: usuario ya existente
-            if (username.equalsIgnoreCase("admin")) {
-                tvError.setText("Ese nombre ya existe");
-                tvError.setVisibility(View.VISIBLE);
-            } else {
-                Toast.makeText(
-                        getContext(),
-                        "Cuenta creada correctamente",
-                        Toast.LENGTH_SHORT
-                ).show();
-                // Registro correcto → ir a Login
-                getParentFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentContainer, new LoginFragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
+            registrarUsuario(username, password, tvError);
         });
 
         return view;
+    }
+
+    private void registrarUsuario(String username, String password, TextView tvError) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:8000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService service = retrofit.create(ApiService.class);
+
+        RegisterRequest body = new RegisterRequest(username, password);
+
+        service.register(body).enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Cuenta creada correctamente", Toast.LENGTH_SHORT).show();
+
+                    getParentFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragmentContainer, new LoginFragment())
+                            .commit();
+
+                } else if (response.code() == 409) {
+                    tvError.setText("Ese nombre ya existe");
+                    tvError.setVisibility(View.VISIBLE);
+
+                } else {
+                    tvError.setText("Error al registrar usuario");
+                    tvError.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                tvError.setText("No se pudo conectar al servidor");
+                tvError.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }

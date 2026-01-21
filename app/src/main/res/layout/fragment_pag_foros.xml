@@ -1,90 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#0B0B1E"
     tools:context=".PagForosFragment">
 
-    <!-- Ahora todos estos componentes se posicionarán correctamente -->
-
+    <!-- Título centrado -->
     <TextView
         android:id="@+id/txtTitulo"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Nombre del foro"
+        android:text="NOMBRE DEL FORO"
         android:textSize="26sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:shadowColor="#9A8CFF"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"
-       />
+        android:layout_marginTop="48dp"/>
 
-    <ImageButton
-        android:id="@+id/btnAgregar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Agregar mensaje"
-        android:src="@android:drawable/ic_input_add"
-        app:layout_constraintTop_toTopOf="@id/txtTitulo"
-        app:layout_constraintBottom_toBottomOf="@id/txtTitulo"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"/>
-
+    <!-- RecyclerView de mensajes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerMensajes"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@id/txtTitulo"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layoutComentario"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:padding="16dp"/>
+        app:layout_constrainedHeight="true"/>
 
-    <ImageButton
-        android:id="@+id/info"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Info"
-        android:src="@drawable/info"
-        android:scaleType="fitCenter"
-        app:layout_constraintTop_toTopOf="@id/txtTitulo"
-        app:layout_constraintBottom_toBottomOf="@id/txtTitulo"
-        app:layout_constraintEnd_toStartOf="@id/txtTitulo"
-        android:layout_marginEnd="30dp"
-        />
-
+    <!-- Layout de comentario (oculto por defecto) -->
     <LinearLayout
         android:id="@+id/layoutComentario"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp"
+        android:background="#1A1A3D"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constrainedHeight="true"
+        android:elevation="8dp">
 
-        <EditText
-            android:id="@+id/editComentario"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/editComentarioMini"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Escribe tu comentario"
-            android:maxLines="3"
-            android:background="@drawable/bg_edit_comentario"
-            android:textColor="@android:color/black"
-            />
+            android:hint="Escribe tu comentario..."
+            android:textColor="#FFFFFF"
+            android:textColorHint="#9A8CFF"
+            android:background="@drawable/input_arcade"
+            android:padding="12dp"/>
 
         <ImageButton
             android:id="@+id/btnEnviarComentario"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_send"
-            android:contentDescription="Enviar"/>
+            app:tint="#00F5FF"/>
     </LinearLayout>
 
+    <!-- Botón flotante "+ AGREGAR COMENTARIO" -->
+    <TextView
+        android:id="@+id/tvAgregarComentario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ AGREGAR COMENTARIO"
+        android:textColor="#00F5FF"
+        android:textStyle="bold"
+        android:shadowColor="#9A8CFF"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/btn_arcade"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="32dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

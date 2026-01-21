@@ -1,5 +1,8 @@
 package com.example.ferrol_app;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -53,37 +57,46 @@ public class PagForosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageButton info = view.findViewById(R.id.info);
         TextView txtTitulo = view.findViewById(R.id.txtTitulo);
         RecyclerView recycler = view.findViewById(R.id.recyclerMensajes);
-        ImageButton btnAgregar = view.findViewById(R.id.btnAgregar);
+        TextView btnAgregar = view.findViewById(R.id.tvAgregarComentario);
         LinearLayout layoutComentario = view.findViewById(R.id.layoutComentario);
-        EditText editComentario = view.findViewById(R.id.editComentario);
+        EditText editComentario = view.findViewById(R.id.editComentarioMini);
         ImageButton btnEnviar = view.findViewById(R.id.btnEnviarComentario);
 
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         int idForo = getArguments() != null ? getArguments().getInt(ARG_ID_FORO) : 1;
 
+        txtTitulo.setClickable(true);
+        txtTitulo.setFocusable(true);
+        txtTitulo.setTextColor(Color.parseColor("#00F5FF")); // color tipo “activo”
+        txtTitulo.setPaintFlags(txtTitulo.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); // opcional subrayado
+
         btnAgregar.setOnClickListener(v -> {
             layoutComentario.setVisibility(View.VISIBLE);
+
+            // Foco y teclado
             editComentario.requestFocus();
+            InputMethodManager imm = (InputMethodManager) requireContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editComentario, InputMethodManager.SHOW_IMPLICIT);
         });
-
         btnEnviar.setOnClickListener(v -> {
-
             String texto = editComentario.getText().toString().trim();
-
-            if (texto.isEmpty()) {
-                Toast.makeText(requireContext(),
-                        "El comentario no puede estar vacío",
-                        Toast.LENGTH_SHORT).show();
+            if(texto.isEmpty()) {
+                Toast.makeText(requireContext(), "El comentario no puede estar vacío", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             enviarComentario(idForo, texto);
 
-            // Limpiar y ocultar
+            // Cerrar teclado
+            InputMethodManager imm = (InputMethodManager) requireContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editComentario.getWindowToken(), 0);
+
+            // limpiar y ocultar
             editComentario.setText("");
             layoutComentario.setVisibility(View.GONE);
         });
@@ -92,7 +105,7 @@ public class PagForosFragment extends Fragment {
 
         cargarComentarios(idForo, recycler);
 
-        info.setOnClickListener(v -> {
+        txtTitulo.setOnClickListener(v -> {
             mostrarContenidoForo(idForo);
         });
     }

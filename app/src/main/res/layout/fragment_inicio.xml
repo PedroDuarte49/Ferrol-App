@@ -78,14 +78,19 @@
 
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/cosoas"
+        android:layout_width="218dp"
+        android:layout_height="338dp"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/borde_neon_80"
+        android:clipToPadding="false"
         android:contentDescription="Logo"
-        app:layout_constraintTop_toBottomOf="@id/btn_foros"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/epico_hm"
         app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_foros" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

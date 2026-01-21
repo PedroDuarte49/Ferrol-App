@@ -23,8 +23,13 @@ import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -261,7 +266,10 @@ public class PagForosFragment extends Fragment {
                     String texto = c.getString("comentario");
                     String fecha = c.getString("datetime");
 
-                    lista.add(new Mensaje(user + " / " + fecha, texto));
+                    // Formatear fecha a local
+                    String fechaLocal = formatearFechaLocal(fecha);
+
+                    lista.add(new Mensaje(user + " / " + fechaLocal, texto));
                 }
 
                 requireActivity().runOnUiThread(() -> {
@@ -342,5 +350,24 @@ public class PagForosFragment extends Fragment {
                 );
             }
         }).start();
+    }
+    private String formatearFechaLocal(String isoTime) {
+        try {
+            // Parse ISO 8601
+            ZonedDateTime utcDateTime = ZonedDateTime.parse(isoTime);
+
+            // Convertir a zona horaria local del dispositivo
+            ZonedDateTime localDateTime = utcDateTime.withZoneSameInstant(ZoneId.systemDefault());
+
+            // Formato: día/mes/año hora:minutos:segundos
+            DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                    .withLocale(Locale.getDefault());
+
+            return localDateTime.format(formatter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return isoTime; // Si falla, devolver el texto original
+        }
     }
 }

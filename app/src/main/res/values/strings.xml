@@ -9,4 +9,6 @@
     <string name="subtitle_login">Introduce tu usuario y contraseña para continuar</string>
     <string name="text">INSERT COIN</string>
     <string name="Menu">Menú</string>
+    <string name="ForoTitle">TÍTULO DEL FORO</string>
+    <string name="ForoContent">Contenido del foro...</string>
 </resources>

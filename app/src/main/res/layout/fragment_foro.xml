@@ -11,7 +11,7 @@
         android:id="@+id/tvTitleForo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="FOROS DISPONIBLES"
+        android:text="FOROS"
         android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"

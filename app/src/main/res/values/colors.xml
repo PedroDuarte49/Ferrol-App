@@ -5,4 +5,7 @@
     <color name="neon_pink">#FF2FD2</color>
     <color name="neon_yellow">#FFE600</color>
     <color name="text_white">#FFFFFF</color>
+    <color name="nav_bg">#1A0F2E</color>        <!-- fondo oscuro -->
+    <color name="nav_item_normal">#CFC4FF</color> <!-- texto/icono normal -->
+    <color name="nav_item_selected">#1A0F2E</color> <!-- texto/icono seleccionado -->
 </resources>

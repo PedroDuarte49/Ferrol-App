@@ -8,4 +8,5 @@
     <string name="btn_register_text">Registrarse</string>
     <string name="subtitle_login">Introduce tu usuario y contraseña para continuar</string>
     <string name="text">INSERT COIN</string>
+    <string name="Menu">Menú</string>
 </resources>

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +36,7 @@ public class RegisterFragment extends Fragment {
         EditText etUsername = view.findViewById(R.id.etUsername);
         EditText etPassword = view.findViewById(R.id.etPassword);
         TextView tvError = view.findViewById(R.id.tvError);
+        TextView tvGoLogin = view.findViewById(R.id.tvGoLogin);
         Button btnCreate = view.findViewById(R.id.btnCreateAccount);
 
         btnCreate.setOnClickListener(v -> {
@@ -51,6 +53,21 @@ public class RegisterFragment extends Fragment {
             }
 
             registrarUsuario(username, password, tvError);
+        });
+
+        tvGoLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Navegar al LoginFragment
+                // Usando FragmentTransaction
+                Fragment loginFragment = new LoginFragment();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.fragmentContainer, loginFragment);
+                transaction.addToBackStack(null); // Para poder volver
+                transaction.commit();
+            }
         });
 
         return view;

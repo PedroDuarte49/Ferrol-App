@@ -8,6 +8,6 @@
 
     <item
         android:id="@+id/nav_login"
-        android:title="@string/btn_login_text"
+        android:title="Iniciar sesión"
         android:icon="@drawable/login"/>
 </menu>

@@ -157,7 +157,9 @@ public class LoginFragment extends Fragment {
     private void saveToken(String token) {
         SharedPreferences prefs = requireActivity()
                 .getSharedPreferences("APP_PREFS", Context.MODE_PRIVATE);
-
         prefs.edit().putString("AUTH_TOKEN", token).apply();
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).actualizarTextoLogin();
+        }
     }
 }

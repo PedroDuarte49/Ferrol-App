@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+
 import androidx.fragment.app.Fragment;
 
 public class InicioFragment extends Fragment {
@@ -23,6 +25,7 @@ public class InicioFragment extends Fragment {
         // Referencias a los botones
         Button btnScoreboard = view.findViewById(R.id.btn_scoreboard);
         Button btnForos = view.findViewById(R.id.btn_foros);
+        ImageView imgLogo = view.findViewById(R.id.imgLogo);
 
         // Listener del botón Scoreboard
         btnScoreboard.setOnClickListener(v -> {
@@ -45,6 +48,15 @@ public class InicioFragment extends Fragment {
                         .addToBackStack(null)
                         .commit();
             }
+        });
+
+        imgLogo.setOnClickListener(v -> {
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new HistoriaFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;

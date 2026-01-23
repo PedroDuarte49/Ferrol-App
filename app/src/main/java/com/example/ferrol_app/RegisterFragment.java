@@ -12,7 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +22,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterFragment extends Fragment {
+
+    private EditText etUsername;
+    private EditText etPassword;
+    private TextView tvGoLogin;
+    private Button btnCreate;
+    private TextInputLayout tilUser;
+    private TextInputLayout tilPassword;
 
     public RegisterFragment() {}
 
@@ -33,47 +41,53 @@ public class RegisterFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-        EditText etUsername = view.findViewById(R.id.etUsername);
-        EditText etPassword = view.findViewById(R.id.etPassword);
-        TextView tvError = view.findViewById(R.id.tvError);
-        TextView tvGoLogin = view.findViewById(R.id.tvGoLogin);
-        Button btnCreate = view.findViewById(R.id.btnCreateAccount);
+        etUsername = view.findViewById(R.id.etUser);
+        etPassword = view.findViewById(R.id.etPassword);
+        tvGoLogin = view.findViewById(R.id.tvGoLogin);
+        btnCreate = view.findViewById(R.id.btnCreateAccount);
+        tilUser = view.findViewById(R.id.tilUser);
+        tilPassword = view.findViewById(R.id.tilPassword);
+
+        etUsername.addTextChangedListener(new LoginFragment.SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilUser.setError(null);
+            }
+        });
+
+        etPassword.addTextChangedListener(new LoginFragment.SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilPassword.setError(null);
+            }
+        });
 
         btnCreate.setOnClickListener(v -> {
 
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
-            tvError.setVisibility(View.GONE);
-
-            if (username.isEmpty() || password.isEmpty()) {
-                tvError.setText("Rellena todos los campos");
-                tvError.setVisibility(View.VISIBLE);
+            if (username.isEmpty()) {
+                tilUser.setError("Usuario no válido");
                 return;
+            } else {
+                tilUser.setError(null);
             }
 
-            registrarUsuario(username, password, tvError);
-        });
-
-        tvGoLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Navegar al LoginFragment
-                // Usando FragmentTransaction
-                Fragment loginFragment = new LoginFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.fragmentContainer, loginFragment);
-                transaction.addToBackStack(null); // Para poder volver
-                transaction.commit();
+            if (password.isEmpty() || password.length() < 6) {
+                tilPassword.setError("Mínimo 6 caracteres");
+                return;
+            } else {
+                tilPassword.setError(null);
             }
+
+            registrarUsuario(username, password);
         });
 
         return view;
     }
 
-    private void registrarUsuario(String username, String password, TextView tvError) {
+    private void registrarUsuario(String username, String password) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:8000/")
@@ -97,19 +111,17 @@ public class RegisterFragment extends Fragment {
                             .commit();
 
                 } else if (response.code() == 409) {
-                    tvError.setText("Ese nombre ya existe");
-                    tvError.setVisibility(View.VISIBLE);
+                    //tilUser.setError("Usuario no registrado");
+                    tilUser.setError("Ese nombre ya existe");
 
                 } else {
-                    tvError.setText("Error al registrar usuario");
-                    tvError.setVisibility(View.VISIBLE);
+                    Toast.makeText(getContext(), "Error al registrar usuario", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                tvError.setText("No se pudo conectar al servidor");
-                tvError.setVisibility(View.VISIBLE);
+                Toast.makeText(getContext(), "No se pudo conectar al servidor", Toast.LENGTH_SHORT).show();
             }
         });
     }

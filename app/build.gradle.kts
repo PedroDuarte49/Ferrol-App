@@ -42,6 +42,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // Material Design (Snackbar)
+    implementation("com.google.android.material:material:1.11.0")
     // Conexión a internet (Retrofit)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 // Convertidor de JSON a objetos Kotlin

@@ -1,5 +1,8 @@
 package com.example.ferrol_app;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -19,8 +23,13 @@ import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,37 +62,46 @@ public class PagForosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ImageButton info = view.findViewById(R.id.info);
         TextView txtTitulo = view.findViewById(R.id.txtTitulo);
         RecyclerView recycler = view.findViewById(R.id.recyclerMensajes);
-        ImageButton btnAgregar = view.findViewById(R.id.btnAgregar);
+        TextView btnAgregar = view.findViewById(R.id.tvAgregarComentario);
         LinearLayout layoutComentario = view.findViewById(R.id.layoutComentario);
-        EditText editComentario = view.findViewById(R.id.editComentario);
+        EditText editComentario = view.findViewById(R.id.editComentarioMini);
         ImageButton btnEnviar = view.findViewById(R.id.btnEnviarComentario);
 
         recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         int idForo = getArguments() != null ? getArguments().getInt(ARG_ID_FORO) : 1;
 
+        txtTitulo.setClickable(true);
+        txtTitulo.setFocusable(true);
+        txtTitulo.setTextColor(Color.parseColor("#00F5FF")); // color tipo “activo”
+        txtTitulo.setPaintFlags(txtTitulo.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); // opcional subrayado
+
         btnAgregar.setOnClickListener(v -> {
             layoutComentario.setVisibility(View.VISIBLE);
+
+            // Foco y teclado
             editComentario.requestFocus();
+            InputMethodManager imm = (InputMethodManager) requireContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editComentario, InputMethodManager.SHOW_IMPLICIT);
         });
-
         btnEnviar.setOnClickListener(v -> {
-
             String texto = editComentario.getText().toString().trim();
-
-            if (texto.isEmpty()) {
-                Toast.makeText(requireContext(),
-                        "El comentario no puede estar vacío",
-                        Toast.LENGTH_SHORT).show();
+            if(texto.isEmpty()) {
+                Toast.makeText(requireContext(), "El comentario no puede estar vacío", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             enviarComentario(idForo, texto);
 
-            // Limpiar y ocultar
+            // Cerrar teclado
+            InputMethodManager imm = (InputMethodManager) requireContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editComentario.getWindowToken(), 0);
+
+            // limpiar y ocultar
             editComentario.setText("");
             layoutComentario.setVisibility(View.GONE);
         });
@@ -92,7 +110,7 @@ public class PagForosFragment extends Fragment {
 
         cargarComentarios(idForo, recycler);
 
-        info.setOnClickListener(v -> {
+        txtTitulo.setOnClickListener(v -> {
             mostrarContenidoForo(idForo);
         });
     }
@@ -248,7 +266,10 @@ public class PagForosFragment extends Fragment {
                     String texto = c.getString("comentario");
                     String fecha = c.getString("datetime");
 
-                    lista.add(new Mensaje(user + " / " + fecha, texto));
+                    // Formatear fecha a local
+                    String fechaLocal = formatearFechaLocal(fecha);
+
+                    lista.add(new Mensaje(user + " / " + fechaLocal, texto));
                 }
 
                 requireActivity().runOnUiThread(() -> {
@@ -329,5 +350,24 @@ public class PagForosFragment extends Fragment {
                 );
             }
         }).start();
+    }
+    private String formatearFechaLocal(String isoTime) {
+        try {
+            // Parse ISO 8601
+            ZonedDateTime utcDateTime = ZonedDateTime.parse(isoTime);
+
+            // Convertir a zona horaria local del dispositivo
+            ZonedDateTime localDateTime = utcDateTime.withZoneSameInstant(ZoneId.systemDefault());
+
+            // Formato: día/mes/año hora:minutos:segundos
+            DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+                    .withLocale(Locale.getDefault());
+
+            return localDateTime.format(formatter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return isoTime; // Si falla, devolver el texto original
+        }
     }
 }

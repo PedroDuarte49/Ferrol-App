@@ -1,0 +1,25 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ESTADO PULSADO (BRILLO) -->
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#3C2A5F"/>
+            <stroke
+                android:width="3dp"
+                android:color="#B388FF"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+
+    <!-- ESTADO NORMAL -->
+    <item>
+        <shape>
+            <solid android:color="#2A1B3D"/>
+            <stroke
+                android:width="2dp"
+                android:color="#7B5CFF"/>
+            <corners android:radius="10dp"/>
+        </shape>
+    </item>
+
+</selector>

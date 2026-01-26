@@ -2,4 +2,18 @@
     <string name="app_name">High Mountain</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_usuario">USUARIO</string>
+    <string name="hint_password">CONTRASEÑA</string>
+    <string name="btn_login_text">Iniciar Sesión</string>
+    <string name="btn_register_text">Registrarse</string>
+    <string name="subtitle_login">Introduce tu usuario y contraseña para continuar</string>
+    <string name="text">INSERT COIN</string>
+    <string name="Menu">Menú</string>
+    <string name="ForoTitle">TÍTULO DEL FORO</string>
+    <string name="ForoContent">Contenido del foro</string>
+    <string name="ScoreTitle">SCOREBOARD</string>
+    <string name="BibliaContent">En un lugar no tan lejano de La Coruña, pero sí inmundo —Ferrol—, se encontraba nuestro protagonista.Había pedido una chaqueta rechulona del Racing de Ferrol,
+        pero un malvado cartero y su compañía de entregas lo obligaron a aventurarse en un largo viaje lleno de peligros y una búsqueda de esperanza, la verdad, el compañerismo, la paz interior y, lo más importante, la chaqueta del Ferrol.
+        ¿Será capaz nuestro protagonista de llegar a Monte Alto, venciendo por el camino a la banda criminal de los Riazor Blues, bebiendo todo el alcohol posible y recoger su premio?</string>
+
 </resources>

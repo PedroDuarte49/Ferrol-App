@@ -25,11 +25,12 @@ public class RegisterFragment extends Fragment {
 
     private EditText etUsername;
     private EditText etPassword;
+    private EditText etPasswordConfirm;
     private TextView tvGoLogin;
     private Button btnCreate;
     private TextInputLayout tilUser;
     private TextInputLayout tilPassword;
-
+    private TextInputLayout tilPasswordConfirm;
     public RegisterFragment() {}
 
     @Nullable
@@ -47,6 +48,15 @@ public class RegisterFragment extends Fragment {
         btnCreate = view.findViewById(R.id.btnCreateAccount);
         tilUser = view.findViewById(R.id.tilUser);
         tilPassword = view.findViewById(R.id.tilPassword);
+        etPasswordConfirm = view.findViewById(R.id.etPasswordConfirm);
+        tilPasswordConfirm = view.findViewById(R.id.tilPasswordConfirm);
+
+        etPasswordConfirm.addTextChangedListener(new LoginFragment.SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilPasswordConfirm.setError(null);
+            }
+        });
 
         etUsername.addTextChangedListener(new LoginFragment.SimpleTextWatcher() {
             @Override
@@ -66,6 +76,7 @@ public class RegisterFragment extends Fragment {
 
             String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
+            String passwordConfirm = etPasswordConfirm.getText().toString().trim();
 
             if (username.isEmpty()) {
                 tilUser.setError("Usuario no válido");
@@ -79,6 +90,13 @@ public class RegisterFragment extends Fragment {
                 return;
             } else {
                 tilPassword.setError(null);
+            }
+
+            if (!password.equals(passwordConfirm)) {
+                tilPasswordConfirm.setError("Las contraseñas no coinciden");
+                return;
+            } else {
+                tilPasswordConfirm.setError(null);
             }
 
             registrarUsuario(username, password);

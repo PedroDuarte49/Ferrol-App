@@ -118,7 +118,7 @@ public class PagForosFragment extends Fragment {
 
         new Thread(() -> {
             try {
-                String urlString = "http://10.0.2.2:8000/foros";
+                String urlString = "https://breixo.pythonanywhere.com/foros/";
 
                 java.net.URL url = new java.net.URL(urlString);
                 java.net.HttpURLConnection conn =
@@ -178,7 +178,7 @@ public class PagForosFragment extends Fragment {
 
         new Thread(() -> {
             try {
-                String urlString = "http://10.0.2.2:8000/foros";
+                String urlString = "https://breixo.pythonanywhere.com/foros/";
 
                 java.net.URL url = new java.net.URL(urlString);
                 java.net.HttpURLConnection conn =
@@ -233,7 +233,7 @@ public class PagForosFragment extends Fragment {
 
         new Thread(() -> {
             try {
-                String urlString = "http://10.0.2.2:8000/foros/" + idForo;
+                String urlString = "https://breixo.pythonanywhere.com/foros/" + idForo;
 
                 java.net.URL url = new java.net.URL(urlString);
                 java.net.HttpURLConnection conn =
@@ -302,7 +302,7 @@ public class PagForosFragment extends Fragment {
                     return;
                 }
 
-                URL url = new URL("http://10.0.2.2:8000/foros/" + idForo);
+                URL url = new URL("https://breixo.pythonanywhere.com/foros/" + idForo);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
                 conn.setRequestMethod("POST");

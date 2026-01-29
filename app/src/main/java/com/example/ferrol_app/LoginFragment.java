@@ -114,7 +114,7 @@ public class LoginFragment extends Fragment {
         new Thread(() -> {
             HttpURLConnection conn = null;
             try {
-                URL url = new URL("http://10.0.2.2:8000/auth/login");
+                URL url = new URL("https://breixo.pythonanywhere.com/auth/login");
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");

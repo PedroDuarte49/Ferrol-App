@@ -67,7 +67,7 @@ public class ForoFragment extends Fragment {
 
     private void cargarForosDesdeApi() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8000/")
+                .baseUrl("https://breixo.pythonanywhere.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

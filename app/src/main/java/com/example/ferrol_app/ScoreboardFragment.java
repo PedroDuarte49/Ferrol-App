@@ -55,7 +55,7 @@ public class ScoreboardFragment extends Fragment {
     private void cargarDatosDesdeApi() {
         Retrofit retrofit = new Retrofit.Builder()
                 // 10.0.2.2 es la IP para acceder al localhost del PC desde el emulador
-                .baseUrl("http://10.0.2.2:8000/")
+                .baseUrl("https://breixo.pythonanywhere.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

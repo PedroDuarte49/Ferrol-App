@@ -7,10 +7,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -118,7 +122,7 @@ public class PagForosFragment extends Fragment {
 
         new Thread(() -> {
             try {
-                String urlString = "https://breixo.pythonanywhere.com/foros/";
+                String urlString = "https://breixo.pythonanywhere.com/foros/" +idForo;
 
                 java.net.URL url = new java.net.URL(urlString);
                 java.net.HttpURLConnection conn =
@@ -140,25 +144,23 @@ public class PagForosFragment extends Fragment {
                 reader.close();
 
                 org.json.JSONObject json = new org.json.JSONObject(response.toString());
-                org.json.JSONArray foros = json.getJSONArray("foros");
+                JSONObject foro = json.getJSONObject("foro");
+                String contenido = foro.getString("contenido");
 
-                String contenido = "Sin contenido";
+                requireActivity().runOnUiThread(() -> {
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Contenido del foro")
+                            .setMessage(contenido)
+                            .setPositiveButton("Cerrar", null)
+                            .show();
+                });
 
-                for (int i = 0; i < foros.length(); i++) {
-                    org.json.JSONObject foro = foros.getJSONObject(i);
 
-                    if (foro.getInt("id") == idForo) {
-                        contenido = foro.getString("contenido");
-                        break;
-                    }
-                }
-
-                String finalContenido = contenido;
 
                 requireActivity().runOnUiThread(() -> {
                     new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                             .setTitle("Contenido del foro")
-                            .setMessage(finalContenido)
+                            .setMessage(contenido)
                             .setPositiveButton("Cerrar", null)
                             .show();
                 });
@@ -178,7 +180,7 @@ public class PagForosFragment extends Fragment {
 
         new Thread(() -> {
             try {
-                String urlString = "https://breixo.pythonanywhere.com/foros/";
+                String urlString = "https://breixo.pythonanywhere.com/foros/"+idForo;
 
                 java.net.URL url = new java.net.URL(urlString);
                 java.net.HttpURLConnection conn =
@@ -200,25 +202,15 @@ public class PagForosFragment extends Fragment {
                 reader.close();
 
                 org.json.JSONObject json = new org.json.JSONObject(response.toString());
-                org.json.JSONArray foros = json.getJSONArray("foros");
-
-                String tituloEncontrado = "Foro";
-
-                for (int i = 0; i < foros.length(); i++) {
-                    org.json.JSONObject foro = foros.getJSONObject(i);
-
-                    int id = foro.getInt("id");
-
-                    if (id == idForo) {
-                        tituloEncontrado = foro.getString("titulo");
-                        break;
-                    }
-                }
-
-                String finalTitulo = tituloEncontrado;
+                JSONObject foro = json.getJSONObject("foro");
+                String titulo = foro.getString("titulo");
 
                 requireActivity().runOnUiThread(() ->
-                        txtTitulo.setText(finalTitulo)
+                        txtTitulo.setText(titulo)
+                );
+
+                requireActivity().runOnUiThread(() ->
+                        txtTitulo.setText(titulo)
                 );
 
             } catch (Exception e) {
